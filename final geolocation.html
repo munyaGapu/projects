@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>My Location</title>
+<link rel="stylesheet" href="geolocation_style.css" />
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqpjSrXnBGCvlTIpR65y1XXvDPJf6UxrM"></script>
+<script>
+var f_map;
+function geo(){
+	if(navigator.geolocation){
+		navigator.geolocation.getCurrentPosition(ok,no);
+	}
+	else{
+		alert("no suport for geolocation!!");
+	}
+}
+
+function ok(pos){
+	var lat=pos.coords.latitude;
+	var lon=pos.coords.longitude;
+	var our_dt=new google.maps.LatLng(lat,lon);
+	var map_opt={
+		zoom:10,
+		center:our_dt,
+		mapTypeId:google.maps.MapTypeId.ROADMAP
+	};
+	var the_div=document.getElementById("one");
+	f_map=new google.maps.Map(the_div,map_opt);
+	var title="My location";
+	var content="You are here "+lat+" "+lon;
+	var accuracy=pos.coords.accuracy;
+	content+=" with accuracy of "+accuracy+" m";
+	mark(f_map,our_dt,title,content);
+}
+
+function mark(map,latlong,title,content){
+	var mark_opt={
+		position:latlong,
+		map:map,
+		title:title,
+		clickable:true
+	};
+	var mark_obj=new google.maps.Marker(mark_opt);
+	var info_w_opt={
+		content:content,
+		position:latlong
+	};
+	var info_w_obj=new google.maps.InfoWindow(info_w_opt);
+	google.maps.event.addListener(mark_obj,"click",function(){
+		info_w_obj.open(map);
+		
+	});
+}
+function no(e){
+	var obj={
+		0:"unknown",
+		1:"user does not want their location be known",
+		2:"location unavailable",
+		3:"request timed out"
+	};
+	var err_msg=obj[e.code];
+	if(e.code==0 || e.code==2){
+		err_msg=err_msg+" "+e.message;
+	}
+	var the_div=document.getElementById("one");
+	the_div.innerHTML=err_msg;
+}
+window.onload=geo;
+</script>
+</head>
+<body>
+<h2>Guess What I show you where you are using google maps</h2>
+<div id="one">
+</div>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Final Sticky Notes</title>
+<script>
+window.onload=function(){
+var notebtn=document.getElementById("notebtn");
+notebtn.onclick=addnote;
+var note=document.getElementById("note");
+note.onkeypress=userpress;	
+var the_array=check();
+if(the_array.length>0){
+	for(var i=0;i<the_array.length;i++){
+		var key=the_array[i];
+		var the_obj=JSON.parse(localStorage.getItem(key));
+		domit(key,the_obj);
+	}
+}
+}
+
+function userpress(e){
+	var notebtn=document.getElementById("notebtn");
+	if(e.keyCode==13){
+		notebtn.click();
+		return false;
+	}
+}
+
+function domit(key,obj){
+	var mdiv=document.getElementById("notecont");
+	var inner_div=document.createElement("div");
+	inner_div.setAttribute("id",key);
+	//inner_div.style.backgroundImage("pic/bk.jpg");
+	var the_span=document.createElement("span");
+	the_span.innerHTML=obj.text;
+	inner_div.onmouseover=disp_del;
+	inner_div.onmouseout=rem_del;
+	inner_div.onclick=delete_it;
+	inner_div.appendChild(the_span);
+	mdiv.appendChild(inner_div);
+}
+
+function delete_it(e){
+	var key=e.target.id;
+	if(e.target.tagName.toLowerCase()=="span"){
+		key=e.target.parentNode.id;
+	}
+	var rmv=document.getElementById(key);
+	rmv.parentNode.removeChild(rmv);
+	var the_arr=check();
+	for(var i=0;i<the_arr.length;i++){
+		if(key==the_arr[i]){
+			the_arr.splice(i,1);
+		}
+	}
+	localStorage.setItem("the_array",JSON.stringify(the_arr));
+	localStorage.removeItem(key);
+}
+
+function rem_del(e){
+	var key=e.target.id;
+	var to_remove=document.getElementById("rem");
+	to_remove.parentNode.removeChild(to_remove);
+}
+
+function disp_del(e){
+	var key=e.target.id;
+	if(e.target.tagName.toLowerCase()=="span"){
+		key=e.target.parentNode.id;
+	}
+	var the_one=document.getElementById(key);
+	var lil_p=document.createElement("p");
+	lil_p.setAttribute("id","rem");
+	var th_img=document.createElement("img");
+	th_img.src="pic/warning.png";
+	th_img.height="20";
+	th_img.width="20";
+	lil_p.appendChild(th_img);
+	the_one.appendChild(lil_p);
+}
+
+function addnote(){
+	var note=document.getElementById("note").value;
+	
+	var the_array=check();
+	var key="note"+Math.floor(Math.random()*4000);
+	
+	the_array.push(key);
+	var obj={
+		"text":note
+	};
+	localStorage.setItem(key,JSON.stringify(obj));
+	localStorage.setItem("the_array",JSON.stringify(the_array));
+	domit(key,obj);
+	document.getElementById("note").value="";
+}
+
+function check(){
+	var the_arr=localStorage.getItem("the_array");
+	if(!the_arr){
+		the_arr=[];
+		localStorage.setItem("the_array",the_arr);
+	}
+	else{
+		the_arr=JSON.parse(the_arr);
+	}
+	return the_arr;
+}
+
+
+</script>
+
+<style>
+#mdiv{
+	width:100%;
+	height:700px;
+	background-color:#091239;
+	
+}
+
+#notecont{
+	width:1400px;
+	height:600px;
+	margin-top:20px;
+}
+#notecont div{
+	float:left;
+	margin-left:20px;
+	margin-top:10px;
+	border:groove #0A1636;
+	border-radius:5px;
+	width:200px;
+	height:auto;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:24px;
+	background-image:url(pic/mine.jpg);
+	color:#1EA23F;
+	padding-left:10px;
+}
+#rem{
+	width:20px;
+	height:20px;
+	float:right;
+}
+#notecont div span{
+	margin-left:10px;
+	margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+<div id="mdiv">
+<div id="fcont">
+<form>
+<input type="text" id="note" placeholder="write your note" class="field" />
+<input type="button" id="notebtn" value="ADD" />
+</form>
+</div>
+<div id="notecont">
+</div>
+</div>
+
+</body>
+</html>

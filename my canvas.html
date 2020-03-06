@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<head>
+<meta charset="utf-8" />
+<title>My Canvas</title>
+<style>
+canvas{
+	border:3px groove black;
+}
+</style>
+<script>
+window.onload=function(){
+	/*var cn=document.getElementById("new_cn");
+	var context=cn.getContext("2d");
+	context.fillRect(40,10,300,100);*/
+	var btn=document.getElementById("draw");
+	btn.onclick=yaita;
+}
+function yaita(){
+	var brd=document.getElementById("new_cn");
+	var cont=brd.getContext("2d");
+	var the_sp=document.getElementById("shapes");
+	var ind=the_sp.selectedIndex;
+	var val=the_sp[ind].value;
+	the_bg(brd,cont);
+	
+	var twt=document.getElementById("twt");
+	var twt_val=twt.value;
+	//var twt_val=twt[twt_ind].value;
+	
+	if(val=="square"){
+		for(var i=0;i<20;i++){
+			the_sq(brd,cont);
+		}
+	}
+	/*var btn=document.getElementById("bg");
+	var index=btn.selectedIndex;
+	var vl=btn[index].value;
+	var the_p=document.getElementById("test");
+	the_p.innerHTML=vl;*/
+	drawit(cont,brd,twt_val);
+
+}
+
+
+function drawit(context,canvas,text){
+	context.font="italic bold 1em arial";
+	context.alignText="right";
+	context.fillText(text,50,50);
+}
+
+function the_bg(canvas,context){
+	var the_bc=document.getElementById("bg");
+	var index=the_bc.selectedIndex;
+	var color=the_bc.options[index].value;
+	context.fillStyle=color;
+	context.fillRect(0,0,canvas.width,canvas.height);
+}
+function the_sq(canvas,context){
+	var x=Math.floor(Math.random()*canvas.width);
+	var y=Math.floor(Math.random()*canvas.height);
+	var w=Math.floor(Math.random()*40);
+	context.fillStyle="lightblue";
+	context.fillRect(x,y,w,w);
+}
+</script>
+
+</head>
+
+<body>
+<canvas id="new_cn" width="600" height="400"></canvas>
+
+<form>
+
+<p>
+<label for="bg">Background Color:</label>
+<select id="bg">
+<option value="white" selected="selected">White</option>
+<option value="black">Black</option>
+<option value="red">red</option>
+<option value="green">green</option>
+</select>
+</p>
+<p>
+<label for="shapes">Shapes:</label>
+<select id="shapes">
+<option value="none" selected="selected">Select shape</option>
+<option value="square">square</option>
+
+</select>
+</p>
+<p>
+<label for="twt">Tweet</label>
+<input type="text" id="twt"/>
+</p>
+<p>
+<input type="button" value="Preview" id="draw">
+</p>
+</form>
+</body>
+</html>
